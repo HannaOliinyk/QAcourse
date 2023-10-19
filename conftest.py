@@ -27,3 +27,13 @@ def user():
 def github_api():
      api = GitHub()
      yield api
+
+@pytest.fixture
+def assigment_id():
+    return '12'
+
+@pytest.fixture
+def emojis_fixture():
+    github = GitHub()
+    emojis_response = github.get_emojis()
+    return emojis_response

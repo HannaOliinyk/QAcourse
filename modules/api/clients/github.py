@@ -13,3 +13,13 @@ class GitHub:
         body = r.json()
 
         return body
+    
+    def classroom_assigment(self, assigment_id):
+        r = requests.get(f"https://api.github.com/assignments/{assigment_id}")
+        body = r.json
+
+        return body
+    
+    def get_emojis(self):
+        r = requests.get("https://api.github.com/emojis")
+        return r
