@@ -49,9 +49,42 @@ def test_detailed_orders():
     orders = db.get_detailed_orders()
     print("Замовлення", orders)
     #Check quantity of orders equal to 1
-    assert len(orders) == 1
+    assert len(orders) == 2
     #Check structure of data
     assert orders[0][0] == 1
     assert orders[0][1] == 'Sergii'
     assert orders[0][2] == 'солодка вода'
     assert orders[0][3] == 'з цукром'
+
+@pytest.mark.database
+def test_customer_insert():
+    db = Database()
+    db.insert_new_customer(customer_id = 3, name = 'Ivan', address = 'Peremogy street, 43', \
+                           city = 'Dnipro', postalCode = 49000, country = 'Ukraine')
+    print("Новий клієнт був успішно доданий")
+
+@pytest.mark.database
+def test_update_change_of_contact_information():
+    db = Database()
+    user_Ivan = db.update_change_of_contact_information('Poltava', 3)
+    print(user_Ivan)
+
+@pytest.mark.database
+def test_update_product_with_negative_quantity():
+    db = Database()
+    with pytest.raises(ValueError):
+        db.update_product_qnt_by_id(product_id = 2, qnt = -5)
+    products_with_negative_quantity = db.get_products_with_negative_quantity()
+    assert len(products_with_negative_quantity) == 1
+
+@pytest.mark.database
+def test_add_new_order():
+    db = Database()
+    new_order = db.add_new_order(id = 2, customer_id = 3, product_id = 4, order_date = '14:15:28')
+    print(new_order)
+
+@pytest.mark.database
+def test_add_new_order_without_product():
+    db = Database()
+    with pytest.raises(ValueError, match = "Invalid product_id"):
+        db.add_new_order(id = 3, customer_id = 3, product_id = None, order_date = '14:15:50')

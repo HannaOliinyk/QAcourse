@@ -24,6 +24,8 @@ class Database():
         return record
     
     def update_product_qnt_by_id(self, product_id, qnt):
+        if qnt < 0:
+            raise ValueError("Кількеість не може бути від'ємною")
         query = f"UPDATE products SET quantity = {qnt} WHERE id = {product_id}"
         self.cursor.execute(query)
         self.connection.commit()
@@ -54,3 +56,35 @@ class Database():
         self.cursor.execute(query)
         record = self.cursor.fetchall()
         return record
+    def insert_new_customer(self, customer_id, name, address, city, postalCode, country):
+        query = f"INSERT OR REPLACE INTO customers(id, name, address, city, postalCode, country)\
+            VALUES ({customer_id}, '{name}', '{address}', '{city}', {postalCode},'{country}')"
+        self.cursor.execute(query)
+        self.connection.commit()
+    
+    def update_change_of_contact_information(self, city, customer_id):
+        query = f"UPDATE customers SET city = '{city}' WHERE id = {customer_id}"
+        self.cursor.execute(query)
+        self.connection.commit()
+        return self.get_users(customer_id)
+    
+    def get_users(self, customer_id):
+        query = f"SELECT * FROM customers WHERE id = {customer_id}"
+        self.cursor.execute(query)
+        records = self.cursor.fetchall()
+        return records
+    
+    def get_products_with_negative_quantity(self):
+        query = f"SELECT * FROM products WHERE quantity < 0"
+        self.cursor.execute(query)
+        products = self.cursor.fetchall()
+        return products
+    
+    def add_new_order(self, id, customer_id, product_id, order_date):
+        if product_id is not None:
+            query = f"INSERT OR REPLACE INTO orders (id, customer_id, product_id, order_date)\
+                VALUES ({id}, {customer_id}, {product_id},'{order_date}')"
+            self.cursor.execute(query)
+            self.connection.commit()
+        else:
+            raise ValueError('Invalid product_id')
