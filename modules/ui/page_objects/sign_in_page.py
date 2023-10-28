@@ -20,3 +20,22 @@ class SignInPage(BasePage):
 
     def check_title(self, expected_title):
         return self.driver.title == expected_title
+    
+
+class NovaPost(BasePage):
+    URL = "https://novaposhta.ua/"
+
+    def __init__(self) -> None:
+        super().__init__()
+
+    def go_to(self):
+        self.driver.get(NovaPost.URL)
+
+    def try_search_invoice(self, invoice_number):
+        invoice_input = self.driver.find_element(By.ID, "cargo_number")
+        invoice_input.send_keys(invoice_number)
+        btn_elem = self.driver.find_element(By.NAME, "")
+        btn_elem.click()
+
+    def check_title(self, expected_title):
+        return self.driver.title == expected_title
